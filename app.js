@@ -19,5 +19,24 @@ const updateFlag=(element)=>{
     let newSrc=`https://flagsapi.com/${countryCode}/flat/64.png`;
     let img=element.parentElement.querySelector("img");
     img.src=newSrc;
-    console.log(countryCode);
 }
+
+async function getRate(fromCode,toCode){
+    let URL=`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${fromCode}.json`;
+    let response=await fetch(URL);
+    let data=await response.json();
+    return data[fromCode][toCode];
+}
+
+
+let button=document.querySelector("button");
+let from=document.querySelector(".dropdown .from select");
+let to=document.querySelector(".dropdown .to select");
+
+
+button.addEventListener("click",async (evt)=>{
+    evt.preventDefault();
+    let ammount=document.querySelector("input").value;
+    let rate=await getRate(from.value.toLowerCase(),to.value.toLowerCase());
+    document.querySelector(".msg").innerText=`${ammount} ${from.value} = ${rate*ammount} ${to.value}`;
+})
